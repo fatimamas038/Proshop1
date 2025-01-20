@@ -58,27 +58,83 @@ const ProductEditScreen = ({ match, history }) => {
       }, [dispatch, history, productId, product,successUpdate])
 
       const uploadFileHandler = async (e) => {
+        console.log("in file handler");
+        // setImage(e.target.files[0])
         const file = e.target.files[0]
+        
+        
         const formData = new FormData()
-        formData.append('image', file)
+        formData.append('file', file)
+        formData.append("upload_preset","insta-clone")
+        formData.append("cloud_name","ddf8agjjc")
         setUploading(true)
     
         try {
-          const config = {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
+          
+    console.log(formData);
     
-          const { data } = await axios.post('/api/upload', formData, config)
+          const { data } = await axios.post('https://api.cloudinary.com/v1_1/ddf8agjjc/image/upload', formData)
+    console.log(data);
     
-          setImage(data)
+          setImage(data.url)
           setUploading(false)
         } catch (error) {
           console.error(error)
           setUploading(false)
         }
       }
+
+  //   const postDetails = ()=>{
+  //     const data = new FormData()
+  //     data.append("file",image)
+  //     data.append("upload_preset","insta-clone")
+  //     data.append("cloud_name","ddf8agjjc")
+  //     fetch("https://api.cloudinary.com/v1_1/ddf8agjjc/image/upload",{
+  //         method:"post",
+  //         body:data
+  //     })
+  //     .then(res=>res.json())
+  //     .then(data=>{
+  //        setUrl(data.url)
+  //     })
+  //     .catch(err=>{
+  //         console.log(err)
+  //     })
+
+   
+  // }
+
+  //     const uploadFileHandler = async (e) => {
+  //       console.log("in file handler");
+        
+  //       const file = e.target.files[0]
+  //       console.log(e.target.files);
+        
+  //       console.log(file);
+        
+  //       const formData = new FormData()
+  //       formData.append('image', file)
+  //       setUploading(true)
+    
+  //       try {
+  //         const config = {
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data',
+  //           },
+  //         }
+  //   console.log(formData);
+    
+  //         const { data } = await axios.post('/api/upload', formData, config)
+  //   console.log(data);
+    
+  //         setImage(data)
+  //         setUploading(false)
+  //       } catch (error) {
+  //         console.error(error)
+  //         setUploading(false)
+  //       }
+  //     }
+
 
 
       const submitHandler=(e)=>{
@@ -127,17 +183,19 @@ return (
             <Form.Group controlId='image'>
               <Form.Label>Image</Form.Label>
               <Form.Control
-                type='text'
+                type='file'
                 placeholder='Enter image url'
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                // value={image}
+                onChange={(e) => {
+                  uploadFileHandler(e)} 
+                }
               ></Form.Control>
-               <Form.File
+               {/* <Form.File
                 id='image-file'
                 label='Choose File'
                 custom
                 onChange={uploadFileHandler}
-              ></Form.File>
+              ></Form.File> */}
               {uploading && <Loader />}
               </Form.Group>
 
